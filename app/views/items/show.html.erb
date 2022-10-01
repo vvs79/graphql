@@ -3,4 +3,6 @@
 <hr/>
 <p><b>Artist: </b><%= @item['artist'] %></p>
 <br/>
+<%= link_to 'Delete item', @item, method: :delete, data: { confirm: 'Are you sure?' } %>
+<br/>
 <%= link_to 'All items', items_path %>

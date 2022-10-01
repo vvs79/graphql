@@ -1,11 +1,7 @@
 <hr/>
 <br/>
-<% @items.each do |item| %>
-  <p><b>Item #<%= item['id'] %>: </b><%= link_to item['title'], item_path(id: item['id']) %></p>
-  <p><%= item['description'] %></p>
-  <p><%= item['imageUrl'] %></p>
-  <br/>
-<% end %>
+<%= render 'items_form' %>
 <hr/>
-
 <%= link_to 'Create Item', new_item_path %>
+<hr/>
+<%= link_to 'Multiplex', multiplex_items_path %>

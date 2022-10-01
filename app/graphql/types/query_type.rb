@@ -12,12 +12,21 @@ module Types
       argument :id, ID
     end
 
+    field :artists,
+    [Types::ArtistType],
+    null: false,
+    description: 'Return a list of artists'
+
     def items
       Item.all
     end
 
     def item(id:)
       Item.find_by(id: id)
+    end
+
+    def artists
+      Artist.all
     end
   end
 end

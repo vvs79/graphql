@@ -1,0 +1,11 @@
+<h3>Multiplex test</h3>
+<hr/>
+<h4>Items</h4>
+<%= render 'items_form' %>
+<hr/>
+<h4>Artists</h4>
+<% @artists.each do |artist| %>
+  <p><b>Artist #<%= artist['id'] %>: </b><%= artist['fullName'] %></p>
+  <p><%= artist['email'] %></p>
+  <br/>
+<% end %>

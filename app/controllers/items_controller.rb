@@ -1,16 +1,7 @@
 class ItemsController < ApplicationController
 
   def index
-    query_string = '{
-                      items {
-                        id
-                        title
-                        description
-                        imageUrl
-                      }
-                    }'
-    @items = GraphqlSchema.execute(query_string).dig('data', 'items')
-    # puts "items === #{@items.inspect}"
+    @items = GraphqlSchema.execute(items_query_string).dig('data', 'items')
   end
 
   def show
@@ -28,7 +19,6 @@ class ItemsController < ApplicationController
                     }'
     variables = { 'itemId' => params[:id] }
     @item = GraphqlSchema.execute(query_string, variables: variables).dig('data', 'item')
-    # puts "item === #{@item}"
   end
 
   def new
@@ -36,12 +26,14 @@ class ItemsController < ApplicationController
   end
 
   def create
-    puts "params === #{params}"
     item_params = params[:item]
-    item_params[:image_url] = Item.first&.image_url if item_params[:image_url].blank?
-    item_params[:artist_id] = Artist.first&.id if item_params[:artist_id].blank?
-    query_string = "mutation createItem($itemParams: ItemInput!){
-                      createItem(item: $itemParams) {
+    item_params = "title: \"#{item_params[:title]}\",
+                   description: \"#{item_params[:description]}\",
+                   imageUrl: \"#{item_params[:image_url].blank? ? Item.first&.image_url : item_params[:image_url]}\",
+                   artistId: #{Artist.first&.id}"
+
+    query_string = "mutation {
+                      createItem(#{item_params}) {
                         id
                         title
                         description
@@ -49,19 +41,81 @@ class ItemsController < ApplicationController
                         artistId
                       }
                     }"
-    variables = { 'itemParams' => {
-      'title' => item_params[:title],
-      'description' => item_params[:description],
-      'imageUrl' => item_params[:image_url].blank? ? Item.first&.image_url : item_params[:image_url],
-      'artistId' => Artist.first&.id }
-    }
-    puts "variables = #{variables}"
-    item = GraphqlSchema.execute(query_string, variables: variables)
-    puts "item === #{item.inspect}"
+
+    GraphqlSchema.execute(query_string)
     redirect_to items_path
   end
 
+  def destroy
+    id = params[:id]
+    query_string = "mutation {
+                      destroyItem(id: #{id}) {
+                        id
+                        title
+                        description
+                        imageUrl
+                        artistId
+                      }
+                    }"
+
+    item = GraphqlSchema.execute(query_string)
+    redirect_to items_path
+  end
+
+  def edit
+    @item = Item.find_by(id: params[:id])
+  end
+
+  def update
+    item = Item.find_by(id: params[:id])
+    item_params = params[:item]
+    item_params = "title: \"#{item_params[:title]}\",
+                   description: \"#{item_params[:description]}\",
+                   imageUrl: \"#{item_params[:image_url]}\""
+
+    query_string = "mutation {
+                      updateItem(id: #{params[:id]}, #{item_params}) {
+                        id
+                        title
+                        description
+                        imageUrl
+                        artistId
+                      }
+                    }"
+
+    GraphqlSchema.execute(query_string)
+    redirect_to item_path(item)
+  end
+
+  def multiplex
+    query_string = '{
+                      artists {
+                        id
+                        email
+                        fullName
+                      }
+                    }'
+
+    res = GraphqlSchema.multiplex([
+            {query: items_query_string},
+            {query: query_string},
+          ])
+    @items = res[0].dig('data', 'items')
+    @artists = res[1].dig('data', 'artists')
+  end
+
   private
+
+  def items_query_string
+    '{
+      items {
+        id
+        title
+        description
+        imageUrl
+      }
+    }'
+  end
 
   # def item_params
   #   params.require(:item).permit(:title, :description, :image_url, :artist_id)
