@@ -1,7 +1,7 @@
 class ItemsController < ApplicationController
 
   def index
-    @items = GraphqlSchema.execute(items_query_string).dig('data', 'items')
+    @items = GraphqlSchema.execute(items_query_string, variables: {}, operation_name: nil, context: {}).dig('data', 'items')
   end
 
   def show
@@ -11,8 +11,7 @@ class ItemsController < ApplicationController
                         title
                         description
                         artist {
-                          firstName
-                          lastName
+                          fullName
                           email
                         }
                       }

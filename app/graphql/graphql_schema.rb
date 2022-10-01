@@ -1,3 +1,12 @@
+module MultiplexCounter
+  def self.before_multiplex(multiplex)
+    Rails.logger.info("Multiplex size: #{multiplex.queries.length}")
+  end
+
+  def self.after_multiplex(multiplex)
+  end
+end
+
 class GraphqlSchema < GraphQL::Schema
   mutation(Types::MutationType)
   query(Types::QueryType)
@@ -37,4 +46,9 @@ class GraphqlSchema < GraphQL::Schema
     # For example, use Rails' GlobalID library (https://github.com/rails/globalid):
     GlobalID.find(global_id)
   end
+
+  instrument(:multiplex, MultiplexCounter)
+  # multiplex_analyzer(MyAnalyzer) # add MyAnalizer to own_multiplex_analyzers
+  # https://github.com/rmosolgo/graphql-ruby/blob/master/lib/graphql/schema.rb
+  Rails.logger.info("own_multiplex_analyzers: #{own_multiplex_analyzers}")
 end

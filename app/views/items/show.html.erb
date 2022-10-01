@@ -1,8 +1,12 @@
-<p><b>Item #<%= @item['id'] %>: </b><%= @item['title'] %></p>
-<p><%= @item['description'] %></p>
+<p><b>Item #<%= @item['id'] %> Title: </b><%= @item['title'] %></p>
+<p><b>Description: </b><%= @item['description'] %></p>
 <hr/>
-<p><b>Artist: </b><%= @item['artist'] %></p>
-<br/>
+<p><b>Artist: </b>
+  <% @item['artist'].each do |k, v| %>
+    <%= "#{k}: #{v}," %>
+  <% end %>
+</p>
+
 <%= link_to 'Delete item', @item, method: :delete, data: { confirm: 'Are you sure?' } %>
-<br/>
+<br/><br/>
 <%= link_to 'All items', items_path %>
