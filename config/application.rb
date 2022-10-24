@@ -34,5 +34,7 @@ module Graphql
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # config.factory_bot.definition_file_paths = ['custom/factories']
   end
 end

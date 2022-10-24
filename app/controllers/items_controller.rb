@@ -29,7 +29,7 @@ class ItemsController < ApplicationController
     item_params = "title: \"#{item_params[:title]}\",
                    description: \"#{item_params[:description]}\",
                    imageUrl: \"#{item_params[:image_url].blank? ? Item.first&.image_url : item_params[:image_url]}\",
-                   artistId: #{Artist.first&.id}"
+                   artistId: #{item_params[:artist_id] || Artist.first&.id}"
 
     query_string = "mutation {
                       createItem(#{item_params}) {
@@ -87,17 +87,17 @@ class ItemsController < ApplicationController
   end
 
   def multiplex
-    query_string = '{
-                      artists {
-                        id
-                        email
-                        fullName
-                      }
-                    }'
+    artists_query_string = '{
+                             artists {
+                               id
+                               email
+                               fullName
+                             }
+                           }'
 
     res = GraphqlSchema.multiplex([
             {query: items_query_string},
-            {query: query_string},
+            {query: artists_query_string},
           ])
     @items = res[0].dig('data', 'items')
     @artists = res[1].dig('data', 'artists')

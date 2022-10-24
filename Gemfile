@@ -47,3 +47,10 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'graphql'
 gem 'graphiql-rails', group: :development
+
+group :development, :test do
+  gem 'rspec-rails', '~> 6.0.0'
+  gem 'factory_bot_rails'
+end
+
+gem 'faker', '2.22.0'
