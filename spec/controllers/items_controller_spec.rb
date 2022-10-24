@@ -36,8 +36,7 @@ RSpec.describe ItemsController, type: :controller do
     end
     Artist.all.each do |artist|
       expect(response.body).to include(artist.email)
-      expect(response.body).to include(artist.first_name)
-      expect(response.body).to include(artist.last_name)
+      expect(response.body).to include(artist.full_name)
     end
   end
 
@@ -47,6 +46,7 @@ RSpec.describe ItemsController, type: :controller do
 
     expect(response.status).to eq 200
     expect(response.body).to include(artist.email)
+    expect(response.body).to include(artist.full_name)
     expect(response.body).to include(item.title)
     expect(response.body).to include(item.description)
     expect(response.body).not_to include(item.image_url)

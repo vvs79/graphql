@@ -11,7 +11,7 @@ module Types
     field :full_name, String, null: true
 
     def full_name 
-      [object.first_name, object.last_name].compact.join(' ')
+      object.full_name
     end
   end
 end
