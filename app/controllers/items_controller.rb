@@ -4,6 +4,10 @@ class ItemsController < ApplicationController
     @items = GraphqlSchema.execute(items_query_string, variables: {}, operation_name: nil, context: {}).dig('data', 'items')
   end
 
+  def all_items
+    @items = Item.all
+  end
+
   def show
     query_string = 'query getItem($itemId: ID!) {
                       item(id: $itemId) {
@@ -112,6 +116,10 @@ class ItemsController < ApplicationController
         title
         description
         imageUrl
+        artist {
+          fullName
+          email
+        }
       }
     }'
   end

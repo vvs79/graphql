@@ -1,6 +1,17 @@
 <% @items.each do |item| %>
-  <p><b>Item #<%= item['id'] %>: </b><%= link_to item['title'], item_path(id: item['id']) %> <%= link_to 'Edit', edit_item_path(id: item['id']) %></p>
-  <p><%= item['description'] %></p>
-  <p><%= item['imageUrl'] %></p>
+  <% item_id = item['id'] || item.id
+     item_title = item['title'] || item.title %>
+  <p><b>Item #<%= item_id %>: </b><%= link_to item_title, item_path(id: item_id) %> <%= link_to 'Edit', edit_item_path(id: item_id) %></p>
+  <p><%= item['description'] || item.description %></p>
+  <p><%= item['imageUrl'] || item.image_url %></p>
+  <p><b>Artist: </b>
+    <% if item['artist'] %>
+      <% item['artist'].each do |k, v| %>
+        <%= "#{v}," %>
+      <% end %>
+    <% else %>
+      <%= "#{item.artist.full_name}, #{item.artist.email}" %>
+    <% end %>
+  </p>
   <br/>
 <% end %>

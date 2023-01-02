@@ -11,4 +11,6 @@ Rails.application.routes.draw do
       get :multiplex
     end
   end
+
+  get :all_items, to: 'items#all_items'
 end
